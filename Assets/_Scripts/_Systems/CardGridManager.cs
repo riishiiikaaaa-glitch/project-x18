@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic; // ✅ REQUIRED
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,7 +26,6 @@ public class CardGridManager : MonoBehaviour
 
     IEnumerator ConfigureGridDelayed()
     {
-        // Wait one frame for UI layout
         yield return null;
 
         ConfigureGrid();
@@ -51,28 +51,37 @@ public class CardGridManager : MonoBehaviour
 
         float size = Mathf.Min(cellWidth, cellHeight);
         gridLayout.cellSize = new Vector2(size, size);
-
-        Debug.Log($"Grid configured: {rows}x{columns}, cell size {size}");
     }
 
     void SpawnCards()
     {
         int totalCards = rows * columns;
 
+        // Create paired IDs
+        List<int> cardIds = new List<int>();
+        for (int i = 0; i < totalCards / 2; i++)
+        {
+            cardIds.Add(i);
+            cardIds.Add(i);
+        }
+
+        // Shuffle
+        for (int i = 0; i < cardIds.Count; i++)
+        {
+            int randomIndex = Random.Range(i, cardIds.Count);
+            int temp = cardIds[i];
+            cardIds[i] = cardIds[randomIndex];
+            cardIds[randomIndex] = temp;
+        }
+
+        // Spawn cards
         for (int i = 0; i < totalCards; i++)
         {
             Card card = Instantiate(cardPrefab, gridLayout.transform);
-            card.cardId = i / 2; // pairing logic
+            card.cardId = cardIds[i];
         }
 
-        // ✅ THIS IS THE FIX
-        if (matchSystem != null)
-        {
-            matchSystem.RegisterTotalCards(totalCards);
-        }
-        else
-        {
-            Debug.LogError("MatchSystem not found!");
-        }
+        // Register total cards
+        matchSystem?.RegisterTotalCards(totalCards);
     }
 }
