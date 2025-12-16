@@ -10,9 +10,23 @@ public class MatchSystem : MonoBehaviour
     private List<Card> openCards = new List<Card>();
     private ScoreManager scoreManager;
 
-    private void Start()
+    private int totalCards = 0;
+    private int matchedCards = 0;
+    private bool gameWon = false;
+
+    private void Awake()
     {
         scoreManager = FindObjectOfType<ScoreManager>();
+    }
+
+    // 🔹 CALLED BY CardGridManager
+    public void RegisterTotalCards(int count)
+    {
+        totalCards = count;
+        matchedCards = 0;
+        gameWon = false;
+
+        Debug.Log($"MatchSystem registered {totalCards} cards");
     }
 
     public void RegisterFlippedCard(Card card)
@@ -23,9 +37,7 @@ public class MatchSystem : MonoBehaviour
         openCards.Add(card);
 
         if (openCards.Count == 2)
-        {
             StartCoroutine(CheckMatch());
-        }
     }
 
     private IEnumerator CheckMatch()
@@ -38,36 +50,38 @@ public class MatchSystem : MonoBehaviour
             a.SetMatched();
             b.SetMatched();
 
-            if (scoreManager != null)
-                scoreManager.AddMatchScore();
+            matchedCards += 2;
+
+            scoreManager?.AddMatchScore();
+            AudioManager.Instance?.PlayMatch();
 
             openCards.Clear();
-
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayMatch();
-            }
-
+            CheckForWin();
         }
         else
         {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayMismatch();
-            }
+            AudioManager.Instance?.PlayMismatch();
 
             yield return new WaitForSeconds(mismatchDelay);
 
-            if (!a.IsMatched)
-                StartCoroutine(a.FlipDown());
-
-            if (!b.IsMatched)
-                StartCoroutine(b.FlipDown());
+            StartCoroutine(a.FlipDown());
+            StartCoroutine(b.FlipDown());
 
             openCards.Clear();
+            scoreManager?.ResetCombo();
+        }
+    }
 
-            if (scoreManager != null)
-                scoreManager.ResetCombo();
+    private void CheckForWin()
+    {
+        if (gameWon)
+            return;
+
+        if (matchedCards == totalCards)
+        {
+            gameWon = true;
+            AudioManager.Instance?.PlayWin();
+            Debug.Log("Game Complete!");
         }
     }
 }

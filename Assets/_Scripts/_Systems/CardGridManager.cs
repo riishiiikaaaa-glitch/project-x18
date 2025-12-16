@@ -15,8 +15,11 @@ public class CardGridManager : MonoBehaviour
     public GridLayoutGroup gridLayout;
     public RectTransform boardRect;
 
-    public void Start()
+    private MatchSystem matchSystem;
+
+    private void Start()
     {
+        matchSystem = FindObjectOfType<MatchSystem>();
         StartCoroutine(ConfigureGridDelayed());
     }
 
@@ -60,6 +63,16 @@ public class CardGridManager : MonoBehaviour
         {
             Card card = Instantiate(cardPrefab, gridLayout.transform);
             card.cardId = i / 2; // pairing logic
+        }
+
+        // ✅ THIS IS THE FIX
+        if (matchSystem != null)
+        {
+            matchSystem.RegisterTotalCards(totalCards);
+        }
+        else
+        {
+            Debug.LogError("MatchSystem not found!");
         }
     }
 }
