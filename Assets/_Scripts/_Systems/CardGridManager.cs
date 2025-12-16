@@ -8,6 +8,9 @@ public class CardGridManager : MonoBehaviour
     public int rows = 4;
     public int columns = 4;
 
+    [Header("Card Prefab")]
+    public Card cardPrefab;
+
     [Header("References")]
     public GridLayoutGroup gridLayout;
     public RectTransform boardRect;
@@ -19,10 +22,11 @@ public class CardGridManager : MonoBehaviour
 
     IEnumerator ConfigureGridDelayed()
     {
-        // Wait for UI layout to calculate
+        // Wait one frame for UI layout
         yield return null;
 
         ConfigureGrid();
+        SpawnCards();
     }
 
     void ConfigureGrid()
@@ -43,9 +47,19 @@ public class CardGridManager : MonoBehaviour
         float cellHeight = boardHeight / rows;
 
         float size = Mathf.Min(cellWidth, cellHeight);
-
         gridLayout.cellSize = new Vector2(size, size);
 
         Debug.Log($"Grid configured: {rows}x{columns}, cell size {size}");
+    }
+
+    void SpawnCards()
+    {
+        int totalCards = rows * columns;
+
+        for (int i = 0; i < totalCards; i++)
+        {
+            Card card = Instantiate(cardPrefab, gridLayout.transform);
+            card.cardId = i / 2; // pairing logic
+        }
     }
 }
