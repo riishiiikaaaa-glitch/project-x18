@@ -64,4 +64,9 @@ public class Card : MonoBehaviour
     {
         IsMatched = true;
     }
+
+    public void HandleClick()
+    {
+        OnCardClicked();
+    }
 }
