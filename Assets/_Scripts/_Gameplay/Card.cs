@@ -9,8 +9,19 @@ public class Card : MonoBehaviour
     public bool IsMatched { get; private set; }
 
     public bool isFlipping = false;
-
     public float flipDuration = 0.25f;
+
+    public MatchSystem matchSystem;
+
+    public void Start()
+    {
+        matchSystem = FindObjectOfType<MatchSystem>();
+    }
+
+    public void HandleClick()
+    {
+        OnCardClicked();
+    }
 
     public void OnCardClicked()
     {
@@ -38,6 +49,12 @@ public class Card : MonoBehaviour
         transform.rotation = endRotation;
         IsFaceUp = true;
         isFlipping = false;
+
+        // ✅ CORRECT place for this call
+        if (matchSystem != null)
+        {
+            matchSystem.RegisterFlippedCard(this);
+        }
     }
 
     public IEnumerator FlipDown()
@@ -63,10 +80,5 @@ public class Card : MonoBehaviour
     public void SetMatched()
     {
         IsMatched = true;
-    }
-
-    public void HandleClick()
-    {
-        OnCardClicked();
     }
 }
