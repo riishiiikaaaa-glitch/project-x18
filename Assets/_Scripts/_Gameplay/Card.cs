@@ -61,6 +61,11 @@ public class Card : MonoBehaviour
         IsFaceUp = true;
         isFlipping = false;
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayFlip();
+        }
+
         if (idText != null)
             idText.gameObject.SetActive(true);
 

@@ -42,9 +42,20 @@ public class MatchSystem : MonoBehaviour
                 scoreManager.AddMatchScore();
 
             openCards.Clear();
+
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayMatch();
+            }
+
         }
         else
         {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayMismatch();
+            }
+
             yield return new WaitForSeconds(mismatchDelay);
 
             if (!a.IsMatched)
