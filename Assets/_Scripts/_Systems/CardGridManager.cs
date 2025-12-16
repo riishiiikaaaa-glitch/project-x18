@@ -84,4 +84,17 @@ public class CardGridManager : MonoBehaviour
         // Register total cards
         matchSystem?.RegisterTotalCards(totalCards);
     }
+
+    public void RestartGrid()
+    {
+        // Destroy existing cards
+        for (int i = gridLayout.transform.childCount - 1; i >= 0; i--)
+        {
+            Destroy(gridLayout.transform.GetChild(i).gameObject);
+        }
+
+        // Rebuild grid
+        StartCoroutine(ConfigureGridDelayed());
+    }
+
 }

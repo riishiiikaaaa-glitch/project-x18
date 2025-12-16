@@ -84,4 +84,12 @@ public class MatchSystem : MonoBehaviour
             Debug.Log("Game Complete!");
         }
     }
+
+    public void ResetSystem()
+    {
+        openCards.Clear();
+        matchedCards = 0;
+        gameWon = false;
+    }
+
 }

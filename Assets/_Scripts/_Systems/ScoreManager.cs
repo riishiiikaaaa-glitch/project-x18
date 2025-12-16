@@ -36,4 +36,12 @@ public class ScoreManager : MonoBehaviour
             scoreText.text = $"Score: {score}";
         }
     }
+
+    public void ResetAll()
+    {
+        score = 0;
+        combo = 0;
+        UpdateUI();
+    }
+
 }
