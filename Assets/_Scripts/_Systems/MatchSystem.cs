@@ -9,6 +9,7 @@ public class MatchSystem : MonoBehaviour
 
     private List<Card> openCards = new List<Card>();
     private ScoreManager scoreManager;
+    private UIManager uiManager;
 
     private int totalCards = 0;
     private int matchedCards = 0;
@@ -17,6 +18,7 @@ public class MatchSystem : MonoBehaviour
     private void Awake()
     {
         scoreManager = FindObjectOfType<ScoreManager>();
+        uiManager = FindObjectOfType<UIManager>();
     }
 
     // 🔹 CALLED BY CardGridManager
@@ -25,8 +27,6 @@ public class MatchSystem : MonoBehaviour
         totalCards = count;
         matchedCards = 0;
         gameWon = false;
-
-        Debug.Log($"MatchSystem registered {totalCards} cards");
     }
 
     public void RegisterFlippedCard(Card card)
@@ -80,7 +80,10 @@ public class MatchSystem : MonoBehaviour
         if (matchedCards == totalCards)
         {
             gameWon = true;
+
             AudioManager.Instance?.PlayWin();
+            uiManager?.ShowGameComplete(scoreManager.GetScore());
+
             Debug.Log("Game Complete!");
         }
     }
@@ -91,5 +94,4 @@ public class MatchSystem : MonoBehaviour
         matchedCards = 0;
         gameWon = false;
     }
-
 }

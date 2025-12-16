@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        // Hide end-game UI
+        FindObjectOfType<UIManager>()?.HideGameComplete();
+
         // Reset systems
         scoreManager?.ResetAll();
         matchSystem?.ResetSystem();
@@ -22,4 +25,5 @@ public class GameManager : MonoBehaviour
         // Rebuild board
         gridManager?.RestartGrid();
     }
+
 }

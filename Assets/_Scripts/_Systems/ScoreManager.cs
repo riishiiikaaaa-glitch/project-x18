@@ -44,4 +44,8 @@ public class ScoreManager : MonoBehaviour
         UpdateUI();
     }
 
+    public int GetScore()
+    {
+        return score;
+    } 
 }
